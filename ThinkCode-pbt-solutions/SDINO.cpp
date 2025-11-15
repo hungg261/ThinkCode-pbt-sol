@@ -87,8 +87,8 @@ void solve(){
 
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
-//    freopen("SDINO.INP","r",stdin);
-//    freopen("SDINO.OUT","w",stdout);
+    //freopen("SDINO.INP","r",stdin);
+    //freopen("SDINO.OUT","w",stdout);
     cin >> n;
     for(int i = 1; i <= n; ++i){
         cin >> p[i];
