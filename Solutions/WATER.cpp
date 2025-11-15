@@ -4,7 +4,6 @@ Code: WATER
 Time (YYYY-MM-DD-hh.mm.ss): 2025-11-06-21.20.01
 *******************************************************************************/
 #include<bits/stdc++.h>
-//#define cerr if(false)cerr
 using namespace std;
 
 struct Segment{
@@ -26,7 +25,6 @@ int len = 0;
 
 void compute(){
     sort(segments + 1, segments + len + 1);
-//    cerr << "\n"; for(int i = 1; i <= len; ++i) cerr << segments[i].l << ' ' << segments[i].r << '\n';
 
     int farthest = 0;
     int idx = 1;
@@ -35,8 +33,6 @@ void compute(){
             farthest = max(farthest, segments[idx].r);
             ++idx;
         }
-
-//        cerr << farthest + 1 << ' ';
 
         if(farthest < i) nxt[i][0] = i;
         else nxt[i][0] = min(n * 2 + 1, farthest + 1);

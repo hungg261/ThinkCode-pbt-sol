@@ -54,18 +54,6 @@ void solve(){
         }
     }
 
-//    for(int len = 2; len <= n; len += 2){
-//        for(int i = 1; i + len - 1 <= n; ++i){
-//            int j = i + len - 1;
-//
-//            cerr << i << ' ' << j << ": " << dp[i][j] << '\n';
-//            for(int k = i + 1; k <= j; k += 2){
-//                cerr << "\t" << i << ' ' << k << ": " << S[i] << ' ' << S[k] << '\n';
-//            }
-//        }
-//    }
-
-//    cerr << dp[3][6] << '\n';
     cout << dp[1][n] << '\n';
 }
 
