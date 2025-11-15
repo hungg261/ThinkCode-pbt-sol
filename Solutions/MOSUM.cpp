@@ -1,54 +1,68 @@
-#include <bits/stdc++.h>
+/******************************************************************************
+Link: MOSUM
+Code: MOSUM
+Time (YYYY-MM-DD-hh.mm.ss): 2025-11-11-17.24.29
+*******************************************************************************/
+#include<bits/stdc++.h>
+#define int long long
 using namespace std;
 
-#define int long long
-const int MOD = 1e9 + 7;
-const int MAXA = 2e5 + 5;
+int powmod(int a, int b, int mod){
+    a %= mod;
 
-int binpow(int a, int b) {
     int res = 1;
-    a %= MOD;
-    while (b) {
-        if (b & 1) res = res * a % MOD;
-        a = a * a % MOD;
+    while(b > 0){
+        if(b & 1) res = res * a % mod;
+        a = a * a % mod;
         b >>= 1;
     }
     return res;
 }
 
-int n, freq[MAXA], w[MAXA];
+const int MOD = 1e9 + 7;
+const int MAXN = 1e5, MAXVAL = 1e5;
+int arr[MAXN + 5];
+int n;
 
-signed main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    for (int i = 1; i < MAXA; i++) {
-        w[i] = binpow(i, MOD - 2);
+int sqi2[MAXVAL + 5], sq2i[MAXVAL + 5], G[MAXVAL + 5];
+int freq[MAXVAL + 5];
+void solve(){
+    for(int i = 1; i <= n; ++i){
+        ++freq[arr[i]];
     }
 
-    for (int i = 1; i < MAXA; i++) {
-        for (int j = i * 2; j < MAXA; j += i) {
-            w[j] = (w[j] - w[i] + MOD) % MOD;
+    for(int v = 1; v <= MAXVAL; ++v){
+        for(int j = v; j <= MAXVAL; j += v){
+            sqi2[v] += j * j * freq[j]; sqi2[v] %= MOD;
+            sq2i[v] += j * freq[j]; sq2i[v] %= MOD;
+        }
+        G[v] = (sq2i[v] * sq2i[v] % MOD - sqi2[v]) * powmod(2, MOD - 2, MOD) % MOD;
+    }
+
+    for(int v = MAXVAL; v >= 1; --v){
+        for(int j = v * 2; j <= MAXVAL; j += v){
+            G[v] -= G[j]; G[v] %= MOD;
         }
     }
 
-    cin >> n;
     int ans = 0;
-    for (int i = 0; i < n; i++) {
-        int x; cin >> x;
-        freq[x] += x;
-        ans -= x; ans %= MOD;
-        if (ans < 0) ans += MOD;
+    for(int v = 1; v <= MAXVAL; ++v){
+        ans = (ans + G[v] * powmod(v, MOD - 2, MOD) % MOD) % MOD;
     }
 
-    for (int i = 1; i < MAXA; i++) {
-        int sum = 0;
-        for (int j = i; j < MAXA; j += i) {
-            sum = (sum + freq[j]) % MOD;
-        }
-        ans = (ans + sum * sum % MOD * w[i] % MOD) % MOD;
+    cout << (ans % MOD + MOD) % MOD << '\n';
+}
+
+signed main(){
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    //freopen("MOSUM.INP","r",stdin);
+    //freopen("MOSUM.OUT","w",stdout);
+    cin >> n;
+    for(int i = 1; i <= n; ++i){
+        cin >> arr[i];
     }
 
-    ans = ans * binpow(2, MOD - 2) % MOD;
-    cout << ans << "\n";
+    solve();
+
+    return 0;
 }
