@@ -13,23 +13,51 @@ queue<int> que;
 vector<int> sta;
 
 string res;
-void Sort(int l, int r){
-    if(l == r){
+void Sort(int len){
+    if(len == 1){
         return;
     }
+    else if(len == 2){
+        if(is_sorted(end(sta) - len, end(sta), greater<int>())) return;
+        else{
+            res += "CCHH";
+            reverse(end(sta) - len, end(sta));
+        }
+    }
 
-    int mid = (l + r) >> 1;
-    Sort(l, mid);
-    Sort(mid + 1, r);
+    int mid = len >> 1;
+    Sort(mid);
 
-    for(int i = l; i <= mid; ++i){
+    if(is_sorted(end(sta) - len, end(sta), greater<int>())) return;
+
+    for(int i = 1; i <= len; ++i) res += "C";
+    for(int i = 1; i <= len; ++i) res += "H";
+    reverse(end(sta) - len, end(sta));
+
+    if(is_sorted(end(sta) - len, end(sta), greater<int>())) return;
+
+    Sort(len - mid);
+
+    if(is_sorted(end(sta) - len, end(sta), greater<int>())) return;
+
+    for(int i = 1; i <= len - mid; ++i) res += "C";
+    for(int i = 1; i <= len - mid; ++i) res += "H";
+    reverse(end(sta) - (len - mid), end(sta));
+
+    for(int i = 1; i <= len; ++i) res += "C";
+    for(int i = 1; i <= len; ++i) res += "H";
+    reverse(end(sta) - len, end(sta));
+
+    if(is_sorted(end(sta) - len, end(sta), greater<int>())) return;
+
+    for(int i = 1; i <= mid; ++i){
         res += "C";
         que.push(sta.back());
         sta.pop_back();
     }
 
-    int i = l, j = mid + 1;
-    while(i <= mid && j <= r){
+    int i = 1, j = 1;
+    while(i <= mid && j <= len - mid){
         if(que.front() < sta.back()){
             que.push(que.front());
             que.pop();
@@ -52,7 +80,7 @@ void Sort(int l, int r){
         res += "HC";
         ++i;
     }
-    while(j <= r){
+    while(j <= len - mid){
         que.push(sta.back());
         sta.pop_back();
 
@@ -60,28 +88,31 @@ void Sort(int l, int r){
         ++j;
     }
 
-    for(int i = l; i <= r; ++i){
+    for(int i = 1; i <= len; ++i){
         sta.push_back(que.front());
         que.pop();
 
         res += "H";
     }
-    for(int i = l; i <= r; ++i){
-        que.push(sta.back());
-        sta.pop_back();
 
-        res += "C";
-    }
-    for(int i = l; i <= r; ++i){
-        sta.push_back(que.front());
-        que.pop();
+    if(len == n){
+        for(int i = 1; i <= len; ++i){
+            que.push(sta.back());
+            sta.pop_back();
 
-        res += "H";
+            res += "C";
+        }
+        for(int i = 1; i <= len; ++i){
+            sta.push_back(que.front());
+            que.pop();
+
+            res += "H";
+        }
     }
 }
 
 void solve(){
-    Sort(1, n);
+    Sort(n);
     cout << res << '\n';
 }
 
