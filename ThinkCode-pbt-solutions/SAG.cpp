@@ -90,10 +90,6 @@ signed main(){
     for(int u = 1; u <= n; ++u){
         sort(begin(adj[u]), end(adj[u]));
         adj[u].erase(unique(begin(adj[u]), end(adj[u])), end(adj[u]));
-
-//        for(int v: adj[u]){
-//            cerr << u << ' ' << v << '\n';
-//        }
     }
 
     for(int u = 1; u <= n; ++u) toposort(u);
@@ -104,22 +100,30 @@ signed main(){
     }
 
 
-    string res(n, '?');
-    vector<int> delta(n + 1, 0);
-    for(int _u: topo){
-        int u = dsu.find_set(_u);
-        int d = delta[u];
-
+    vector<int> low(n + 1, 1), high(n + 1, k);
+    for(int i = 0; i < n; ++i){
+        int u = topo[i];
         for(int v: adj[u]){
-            delta[v] = max(delta[v], delta[u] + 1);
+            low[v] = max(low[v], low[u] + 1);
         }
 
-        for(int pos: CCs[u]){
-            if(d == 0 && adj[u].empty()){
-                if(k == 1) res[pos - 1] = 'a';
-                else break;
+        u = topo[n - i - 1];
+        for(int v: adj[u]){
+            high[u] = min(high[u], high[v] - 1);
+        }
+    }
+
+    string res(n, '?');
+    for(int u = 1; u <= n; ++u){
+        if(dsu.par[u] != u) continue;
+
+        if(low[u] == high[u]){
+            for(int id: CCs[u]){
+                res[id - 1] = 'a' + low[u] - 1;
             }
-            res[pos - 1] = 'a' + d;
+        }
+        else{
+
         }
     }
 
