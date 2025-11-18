@@ -1,139 +1,110 @@
 /******************************************************************************
-Link: SDINO
-Code: SDINO
-Time (YYYY-MM-DD-hh.mm.ss): 2025-11-15-12.41.55
+Link: SDINO (Khanh Minh)
+Code: SDINO (Khanh Minh)
+Time (YYYY-MM-DD-hh.mm.ss): 2025-11-19-01.04.42
 *******************************************************************************/
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
+#define int long long
+#define taskname "main"
 using namespace std;
-
-const int MAXN = 2e4;
-int n, p[MAXN + 5];
-
-queue<int> que;
-vector<int> sta;
-
+const int maxN = 1e5;
+int n,
+    a[maxN + 1],
+    tmp[maxN + 1];
 string res;
-void Sort(int len){
-    if(len == 1){
+void init(){
+    cin>>n;
+    for (int i = 1; i <= n; i++)
+        cin>>a[i];
+}
+void don(int idx, int v, int type){
+    while (idx <= v){
+        tmp[++tmp[0]] = a[idx++];
+        if (type == 1){
+            res.push_back('H');
+            res.push_back('C');
+        }
+        else res.push_back('C');
+    }
+}
+void S_to_Q(int sz){
+    for (int i = 1; i <= sz; i++)
+        res.push_back('C');
+}
+void Q_to_S(int sz){
+    for (int i = 1; i <= sz; i++)
+        res.push_back('H');
+}
+int xet(int i, int j, int tang){
+    if (tang)
+        return a[i] <= a[j];
+    return a[i] >= a[j];
+}
+void mer(int u1, int v1, int u2, int v2, int tang){
+    tmp[0] = 0;
+    int i = u1, j = u2;
+    while (i <= v1 && j <= v2){
+        if (xet(i, j, tang)){
+            tmp[++tmp[0]] = a[i++];
+            res.push_back('H');
+            res.push_back('C');
+        }
+        else{
+            tmp[++tmp[0]] = a[j++];
+            res.push_back('C');
+        }
+    }
+    don(i, v1, 1); don(j, v2, 2);
+    for (int i = 1; i <= tmp[0]; ++i)
+        a[i + u1 - 1] = tmp[i];
+}
+void sort_2(int u, int v, int tang){
+    if (xet(u, v, tang))
+        S_to_Q(2);
+    else{
+        swap(a[u], a[v]);
+        S_to_Q(2);
+        Q_to_S(1);
+        S_to_Q(1);
+    }
+}
+void duyet_a(){
+    for (int i = 1; i <= n; i++)
+        cout<<a[i]<<' ';
+    cout<<'\n';
+}
+void mersort(int u, int v, int tang){
+    if (u == v){
+        res.push_back('C');
         return;
     }
-    else if(len == 2){
-        if(is_sorted(end(sta) - len, end(sta), greater<int>())) return;
-        else{
-            res += "CCHH";
-            reverse(end(sta) - len, end(sta));
-        }
+    if (u == v - 1){
+        sort_2(u, v, tang);
+        return;
     }
+    int mid = (u + v) >> 1,
+        sz_a = mid - u + 1,
+        sz_b = v - mid;
 
-    int mid = len >> 1;
-    Sort(mid);
+    mersort(u, mid, !tang);
+    S_to_Q(sz_b);
+    Q_to_S(sz_a + sz_b);
+    reverse(a + u, a + v + 1);
 
-    if(is_sorted(end(sta) - len, end(sta), greater<int>())) return;
+    mersort(u, u + sz_b - 1, tang);
 
-    for(int i = 1; i <= len; ++i) res += "C";
-    for(int i = 1; i <= len; ++i) res += "H";
-    reverse(end(sta) - len, end(sta));
-
-    if(is_sorted(end(sta) - len, end(sta), greater<int>())) return;
-
-    Sort(len - mid);
-
-    if(is_sorted(end(sta) - len, end(sta), greater<int>())) return;
-
-    for(int i = 1; i <= len - mid; ++i) res += "C";
-    for(int i = 1; i <= len - mid; ++i) res += "H";
-    reverse(end(sta) - (len - mid), end(sta));
-
-    for(int i = 1; i <= len; ++i) res += "C";
-    for(int i = 1; i <= len; ++i) res += "H";
-    reverse(end(sta) - len, end(sta));
-
-    if(is_sorted(end(sta) - len, end(sta), greater<int>())) return;
-
-    for(int i = 1; i <= mid; ++i){
-        res += "C";
-        que.push(sta.back());
-        sta.pop_back();
-    }
-
-    int i = 1, j = 1;
-    while(i <= mid && j <= len - mid){
-        if(que.front() < sta.back()){
-            que.push(que.front());
-            que.pop();
-
-            res += "HC";
-            ++i;
-        }
-        else{
-            que.push(sta.back());
-            sta.pop_back();
-
-            res += "C";
-            ++j;
-        }
-    }
-    while(i <= mid){
-        que.push(que.front());
-        que.pop();
-
-        res += "HC";
-        ++i;
-    }
-    while(j <= len - mid){
-        que.push(sta.back());
-        sta.pop_back();
-
-        res += "C";
-        ++j;
-    }
-
-    for(int i = 1; i <= len; ++i){
-        sta.push_back(que.front());
-        que.pop();
-
-        res += "H";
-    }
-
-    if(len == n){
-        for(int i = 1; i <= len; ++i){
-            que.push(sta.back());
-            sta.pop_back();
-
-            res += "C";
-        }
-        for(int i = 1; i <= len; ++i){
-            sta.push_back(que.front());
-            que.pop();
-
-            res += "H";
-        }
-    }
+    mer(u, u + sz_b - 1, v - sz_a + 1, v, tang);
 }
-
 void solve(){
-    Sort(n);
-    cout << res << '\n';
+    mersort(1, n, 0);
+    Q_to_S(n);
+    cout<<res;
 }
-
-signed main(){
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    //freopen("SDINO.INP","r",stdin);
-    //freopen("SDINO.OUT","w",stdout);
-    cin >> n;
-    for(int i = 1; i <= n; ++i){
-        cin >> p[i];
-    }
-    for(int i = n; i >= 1; --i){
-        sta.push_back(p[i]);
-    }
-
-    solve();
-
-    return 0;
+signed main() {
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    #ifndef ONLINE_JUDGE
+        freopen(taskname".inp","r", stdin);
+        freopen(taskname".out","w",stdout);
+    #endif
+    init(); solve();
 }
-
-/*
-3
-3 1 2
-*/
