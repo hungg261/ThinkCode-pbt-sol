@@ -82,14 +82,14 @@ struct AhoCorasick{
         }
     }
 
-    int dfs(int u, vector<int>& res){
+    int dfs(int u, long long& res){
         int occ = T[u].occurrences;
         for(int v: adj[u]){
             occ += dfs(v, res);
         }
 
         for(int id: T[u].ends){
-            res[id] = occ;
+            res += occ;
         }
 
         return occ;
@@ -119,7 +119,7 @@ struct AhoCorasick{
         }
     }
 
-    void Search(vector<int>& res){
+    void Search(long long& res){
         dfs(root, res);
     }
 };
@@ -183,13 +183,14 @@ void subtask1(){
 
     aho.construct();
 
-    vector<int> res(cnt);
     for(int j = i; j <= n; ++j){
+        if(Data[j].first != 1) break;
+
         aho.AddSearchText(Data[j].second);
 
-
+        long long res = 0;
         aho.Search(res);
-        cout << accumulate(begin(res), end(res), 0LL) << '\n';
+        cout << res << '\n';
 
         aho.RemoveSearchText(Data[j].second);
     }
