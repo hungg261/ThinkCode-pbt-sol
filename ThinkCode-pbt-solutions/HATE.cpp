@@ -46,23 +46,22 @@ void solve(int u, int prev, const int& avoid){
         solve(v, u, avoid);
 
         dp[u][0] += max(dp[v][1], dp[v][0]);
-        dp[u][1] += dp[v][0];
+        if(u != avoid) dp[u][1] += dp[v][0];
     }
 }
 
 pair<int, int> popedge;
-bool dfs(int u, int prev){
+void dfs(int u, int prev){
     mark[u] = true;
     for(int v: adj[u]){
         if(v == prev) continue;
 
         if(mark[v]){
             popedge = {u, v};
-            return true;
         }
-        else if(dfs(v, u)) return true;
+        else dfs(v, u);
     }
-    return false;
+    return;
 }
 
 void getCCs(){
@@ -73,8 +72,9 @@ void getCCs(){
 
         int u, v; tie(u, v) = popedge;
         auto it1 = adj[u].find(v);
-        auto it2 = adj[v].find(u);
         if(it1 != adj[u].end()) adj[u].erase(it1);
+
+        auto it2 = adj[v].find(u);
         if(it2 != adj[v].end()) adj[v].erase(it2);
 
         int tempRes;
@@ -119,4 +119,24 @@ signed main(){
 1 4
 1 2
 1 -1
+
+4
+3
+3 2
+5 1
+1 2
+3
+3 2
+2 3
+2 1
+4
+1 3
+2 3
+3 4
+4 2
+4
+2 2
+3 1
+4 4
+3 3
 */
