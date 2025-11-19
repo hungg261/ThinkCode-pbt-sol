@@ -4,35 +4,30 @@ Code: MERCNT
 Time (YYYY-MM-DD-hh.mm.ss): 2025-11-19-15.44.55
 *******************************************************************************/
 #include<bits/stdc++.h>
-#define int long long
+//#define int long long
 using namespace std;
 
-const int MAXN = 5000;
+const int MAXN = 7000;
 const int MOD = 1e9 + 7;
 int n;
-int arr[MAXN + 5];
-int pre[MAXN + 5];
+long long pre[MAXN + 5];
 
-int sum(int l, int r){ return pre[r] - (l > 0 ? pre[l - 1] : 0); }
+inline long long sum(const int& l, const int& r){ return pre[r] - (l > 0 ? pre[l - 1] : 0); }
 
-int dp[MAXN + 5][MAXN + 5];
 int prefDp[MAXN + 5][MAXN + 5];
 void solve(){
-    dp[0][0] = 1;
     prefDp[0][0] = 1;
     for(int i = 1; i <= n; ++i){
-//        int k = i;
-//        for(int j = i; j >= 1; --j){
-//            while(k >= 0 && sum(k, j - 1) <= sum(j, i)){
-//                --k;
-//            }
-//            ++k;
-//
-//            cerr << k << ' ' << j << ' ' << i << '\n';
-//
-//            dp[i][j] += prefDp[j - 1][j - 1] - prefDp[j - 1][k - 1];
-//            prefDp[i][j] = prefDp[i][j - 1] + dp[i][j];
-//        }
+        int k = 0;
+        for(int j = 1; j <= i; ++j){
+            while(sum(k, j - 1) > sum(j, i)){
+                ++k;
+            }
+
+            int cur = (1LL * prefDp[j - 1][j - 1] - (k > 0 ? prefDp[j - 1][k - 1] : 0)) % MOD;
+            prefDp[i][j] = (1LL * prefDp[i][j - 1] + cur) % MOD;
+
+        }
 //
 //        for(int j = 1; j <= i; ++j){
 //            for(int k = 0; k < j; ++k){
@@ -44,15 +39,18 @@ void solve(){
 //        }
     }
 
-    for(int i = 1; i <= n; ++i){
-        cerr << dp[n][i] << ' ';
-    } cerr << '\n';
+//    for(int i = 0; i <= n; ++i){
+//        for(int j = 0; j <= i; ++j){
+//            cerr << prefDp[i][j] << ' ';
+//        } cerr << '\n';
+//    } cerr << '\n';
 
-    int ans = 0;
-    for(int i = 1; i <= n; ++i){
-        ans = (ans + dp[n][i]) % MOD;
-    }
-    cout << ans << '\n';
+//    for(int i = 1; i <= n; ++i){
+//        cerr << dp[n][i] << ' ';
+//    } cerr << '\n';
+
+    long long ans = prefDp[n][n];
+    cout << (ans % MOD + MOD) % MOD << '\n';
 }
 
 signed main(){
@@ -60,13 +58,22 @@ signed main(){
     //freopen("MERCNT.INP","r",stdin);
     //freopen("MERCNT.OUT","w",stdout);
     cin >> n;
-    if(n > 5000) return -1;
     for(int i = 1; i <= n; ++i){
-        cin >> arr[i];
-        pre[i] = pre[i - 1] + arr[i];
+        int cur;
+        cin >> cur;
+        pre[i] = (pre[i - 1] + cur);
     }
 
     solve();
 
     return 0;
 }
+
+/*
+4
+795502939 984202618 8222566 93629221
+
+3
+221589607 910375646 377435208
+
+*/
