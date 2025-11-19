@@ -36,8 +36,6 @@ void input(){
 
 int dp[MAXN + 5][2];
 void solve(int u, int prev, const int& avoid){
-//    cerr << "test: " << u << '\n';
-
     dp[u][0] = 0;
     dp[u][1] = u == avoid ? 0 : c[u];
     for(const int& v: adj[u]){
@@ -79,16 +77,11 @@ void getCCs(){
 
         int tempRes;
 
-//        cerr << i << ' ' << "mark\n";
         solve(u, 0, u);
         tempRes = max(dp[u][0], dp[u][1]);
-//        cerr << '\n';
-//        cerr << max(dp[u][0], dp[u][1]) << ' ';
 
-//        cerr << "mark " << u << ' ' << v << '\n';
         solve(u, 0, v);
         tempRes = max(tempRes, max(dp[u][0], dp[u][1]));
-//        cerr << max(dp[u][0], dp[u][1]) << '\n';
 
         ans += tempRes;
     }
