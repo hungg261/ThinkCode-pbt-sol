@@ -7,9 +7,9 @@ Time (YYYY-MM-DD-hh.mm.ss): 2025-11-20-22.45.04
 using namespace std;
 
 #define int long long
-const int MAXN = 1e5, MAXS = MAXN * (MAXN + 1) / 2;
+const int MAXN = 8000, MAXS = MAXN * (MAXN + 1) / 2;
 const int MOD = 1e9 + 7;
-int dp[MAXN + 5];
+int dp[MAXS + 5];
 int n, Q;
 
 void compute(){
@@ -28,7 +28,7 @@ void solve(){
 
     int ans = 0;
     for(int a = 0; a <= k; ++a){
-        if(a < 0 || k - a < 0) continue;
+        if(a < 0 || k - a < 0 || a > MAXS) continue;
         ans += dp[a] * dp[k - a] % MOD;
         ans %= MOD;
     }
