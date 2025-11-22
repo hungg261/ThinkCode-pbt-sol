@@ -1,50 +1,63 @@
 /******************************************************************************
 Link: SUMLOVE
 Code: SUMLOVE
-Time (YYYY-MM-DD-hh.mm.ss): 2025-11-20-22.45.04
+Time (YYYY-MM-DD-hh.mm.ss): 2025-11-22-18.15.01
 *******************************************************************************/
 #include<bits/stdc++.h>
+//#define int long long
 using namespace std;
 
-#define int long long
-const int MAXN = 8000, MAXS = MAXN * (MAXN + 1) / 2;
+const int SQRTN = 633, MAXK = 1e5;
 const int MOD = 1e9 + 7;
-int dp[MAXS + 5];
 int n, Q;
 
-void compute(){
-    dp[0] = 1;
-    for(int j = 1; j <= n; ++j){
-        for(int i = j * (j + 1) / 2; i >= j; --i){
-            dp[i] += dp[i - j];
-            dp[i] %= MOD;
+int dp[SQRTN + 5][MAXK + 5];
+void solve(){
+    cin >> n >> Q;
+
+    vector<int> qr(Q);
+    int maxval = 0;
+    for(int i = 0; i < Q; ++i){
+        cin >> qr[i];
+        maxval = max(maxval, qr[i]);
+    }
+
+    dp[0][0] = 1;
+    int lim = 2 * (int)sqrt(n) + 1;
+    for (int i = 1; i <= lim; ++i){
+        for (int j = i; j <= maxval; ++j){
+            dp[i][j] = (1LL * dp[i][j] + dp[i][j - i]) % MOD;
+            dp[i][j] = (1LL * dp[i][j] + ((2 * dp[i - 1][j - i]) % MOD)) % MOD;
+
+            if (i >= 2) dp[i][j] = (1LL * dp[i][j] + dp[i - 2][j - i]) % MOD;
+            if (j >= n + 1) dp[i][j] = (1LL * dp[i][j] - ((2 * dp[i - 1][j - (n + 1)]) % MOD) + MOD) % MOD;
+            if (j >= 2 * (n + 1) && i >= 2) dp[i][j] = (1LL * dp[i][j] - dp[i - 2][j - 2 * (n + 1)] + MOD) % MOD;
         }
     }
-}
 
-void solve(){
-    int k;
-    cin >> k;
+    for(int i = 0; i < Q; ++i){
+        const int& k = qr[i];
 
-    int ans = 0;
-    for(int a = 0; a <= k; ++a){
-        if(a < 0 || k - a < 0 || a > MAXS) continue;
-        ans += dp[a] * dp[k - a] % MOD;
-        ans %= MOD;
+        int ans = 0;
+        for (int i = 0; i <= SQRTN; ++i){
+            ans = (1LL * ans + dp[i][k]) % MOD;
+        }
+        cout << (ans % MOD + MOD) % MOD << '\n';
     }
-    cout << ans << '\n';
 }
 
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
-    //freopen("SUMLOVE.INP","r",stdin);
-    //freopen("SUMLOVE.OUT","w",stdout);
-    cin >> n >> Q;
-
-    compute();
-    while(Q--){
-        solve();
-    }
+    solve();
 
     return 0;
 }
+
+/*
+5 5
+1
+2
+3
+4
+5
+*/
