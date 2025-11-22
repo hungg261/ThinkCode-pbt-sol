@@ -4,7 +4,6 @@ Code: INTERMIN
 Time (YYYY-MM-DD-hh.mm.ss): 2025-11-13-15.37.43
 *******************************************************************************/
 #include<bits/stdc++.h>
-//#define int long long
 using namespace std;
 
 const int MAXN = 1e5;
@@ -27,16 +26,7 @@ void solve(){
             if(L > R) r = mid - 1;
             else l = mid + 1;
         }
-
-//        int temp = 1e18;
-//        for(int k = 2; k <= i; ++k){
-//            temp = min(temp, max(a + dp[k - 1], b + dp[i - k + 1]));
-//        }
-//        dp[i] = temp;
     }
-
-//    for(int i = 1; i <= n; ++i) cerr << dp[i] << ' '; cerr << '\n';
-////    cout << dp[n] << '\n';
 
     cout << dp[n] << '\n';
 }

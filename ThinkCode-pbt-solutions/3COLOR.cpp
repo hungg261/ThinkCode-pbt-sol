@@ -18,9 +18,6 @@ int NOT(int x){
 void add_clause(int u, int v){
     G[NOT(u)].push_back(v);
     G[NOT(v)].push_back(u);
-
-//    cerr << NOT(u) << ' ' << v << '\n';
-//    cerr << NOT(v) << ' ' << u << '\n';
 }
 
 int id[MAXN << 1];
@@ -85,11 +82,6 @@ signed main(){
                 int nb = xv ? b : NOT(b);
                 if(new_ca == new_cb){
                     add_clause(NOT(na), NOT(nb));
-//                    cerr << "\tnot " << (na) << " and " << (nb) << '\n';
-                }
-                else{
-//                    add_clause(na, nb);
-//                    cerr << "\t" << na << ' ' << nb << '\n';
                 }
             }
         }

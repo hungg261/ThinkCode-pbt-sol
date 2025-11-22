@@ -4,7 +4,6 @@ Code: MERCNT
 Time (YYYY-MM-DD-hh.mm.ss): 2025-11-19-15.44.55
 *******************************************************************************/
 #include<bits/stdc++.h>
-//#define int long long
 using namespace std;
 
 const int MAXN = 7000;
@@ -28,26 +27,7 @@ void solve(){
             prefDp[i][j] = (1LL * prefDp[i][j - 1] + cur) % MOD;
 
         }
-//
-//        for(int j = 1; j <= i; ++j){
-//            for(int k = 0; k < j; ++k){
-//                if(sum(k, j - 1) <= sum(j, i)){
-//                    dp[i][j] += dp[j - 1][k];
-//                    dp[i][j] %= MOD;
-//                }
-//            }
-//        }
     }
-
-//    for(int i = 0; i <= n; ++i){
-//        for(int j = 0; j <= i; ++j){
-//            cerr << prefDp[i][j] << ' ';
-//        } cerr << '\n';
-//    } cerr << '\n';
-
-//    for(int i = 1; i <= n; ++i){
-//        cerr << dp[n][i] << ' ';
-//    } cerr << '\n';
 
     long long ans = prefDp[n][n];
     cout << (ans % MOD + MOD) % MOD << '\n';
@@ -68,12 +48,3 @@ signed main(){
 
     return 0;
 }
-
-/*
-4
-795502939 984202618 8222566 93629221
-
-3
-221589607 910375646 377435208
-
-*/
