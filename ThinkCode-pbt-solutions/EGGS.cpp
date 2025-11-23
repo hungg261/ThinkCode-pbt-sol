@@ -11,7 +11,7 @@ using namespace std;
 const int OFFSET = 4240;
 int dp[53][2][2][2][2][2][8485];
 int numL[53], numR[53];
-int Try(int idx, int zero1, int zero2, int smaller1, int larger1, int smaller2, int larger2, int less, int diff){
+int Try(int idx, int smaller1, int larger1, int smaller2, int larger2, int less, int diff){
     if(idx < 0) return less && diff > OFFSET;
 
     int& memo = dp[idx][smaller1][larger1][smaller2][larger2][less][diff];
@@ -28,11 +28,10 @@ int Try(int idx, int zero1, int zero2, int smaller1, int larger1, int smaller2, 
         int base = max(bot2, (less ? 0 : digit1));
         for(int digit2 = base; digit2 <= lim2; ++digit2){
             memo += Try(idx - 1,
-                        (zero1 && digit1 == 0), (zero2 && digit2 == 0),
                         (smaller1 || (digit1 < lim1)), (larger1 || (digit1 > bot1)),
                         (smaller2 || (digit2 < lim2)), (larger2 || (digit2 > bot2)),
                         (less || (digit1 < digit2)),
-                        diff + (zero1 || zero2 ? 0 : (digit1 - digit2)));
+                        diff + (digit1 - digit2));
         }
     }
 
@@ -52,11 +51,11 @@ int solve(int L, int R){
         numR[lenR++] = tmpR % 81;
         tmpR /= 81;
     }
-
+`
     int len = max(lenL, lenR);
 
     memset(dp, -1, sizeof dp);
-    return Try(len - 1, 1, 1, 0, 0, 0, 0, 0, OFFSET);
+    return Try(len - 1, 0, 0, 0, 0, 0, OFFSET);
 }
 
 signed main(){
