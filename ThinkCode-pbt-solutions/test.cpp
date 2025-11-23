@@ -4,19 +4,20 @@ using namespace std;
 #define int long long
 
 int numL[53], numR[53];
+int Time = 0;
 void Try(int idx, int smaller1, int larger1, int smaller2, int larger2, int less, int A, int B){
     if(idx < 0){
-        if(less) cerr << A << ' ' << B << '\n';
+        if(less) cerr << ++Time << ": " << A << ' ' << B << '\n';
         return;
     }
 
-    int bot1 = less ? numL[idx] : (larger1 ? 0 : numL[idx]);
+    int bot1 = (larger1 ? 0 : numL[idx]);
     int bot2 = larger2 ? 0 : numL[idx];
 
-    int lim1 = less ? 9 : (smaller1 ? 9 : numR[idx]);
+    int lim1 = (smaller1 ? 9 : numR[idx]);
     int lim2 = smaller2 ? 9 : numR[idx];
 
-//    cerr << A << ' ' << B << ": " << bot1 << ' ' << lim1 << ' ' << bot2 << ' ' << lim2 << '\n';
+//    cerr << "\t- " << A << ' ' << B << ": " << idx << ' ' << numL[idx] << ' ' << numR[idx] << " | " << bot1 << ' ' << lim1 << ' ' << bot2 << ' ' << lim2 << " | " << smaller1 << ' ' << smaller2 << " | " << larger1 << ' ' << larger2 << " | " << less << '\n';
 
     for(int digit1 = bot1; digit1 <= lim1; ++digit1){
         int base = less ? bot2 : max(bot2, digit1);
