@@ -14,8 +14,8 @@ void Try(int idx, int smaller1, int larger1, int smaller2, int larger2, int less
     int bot1 = (larger1 ? 0 : numL[idx]);
     int bot2 = larger2 ? 0 : numL[idx];
 
-    int lim1 = (smaller1 ? 9 : numR[idx]);
-    int lim2 = smaller2 ? 9 : numR[idx];
+    int lim1 = (smaller1 ? 80 : numR[idx]);
+    int lim2 = smaller2 ? 80 : numR[idx];
 
 //    cerr << "\t- " << A << ' ' << B << ": " << idx << ' ' << numL[idx] << ' ' << numR[idx] << " | " << bot1 << ' ' << lim1 << ' ' << bot2 << ' ' << lim2 << " | " << smaller1 << ' ' << smaller2 << " | " << larger1 << ' ' << larger2 << " | " << less << '\n';
 
@@ -36,13 +36,13 @@ void solve(int L, int R){
 
     int tmpL = L, tmpR = R;
     while(tmpL > 0){
-        numL[lenL++] = tmpL % 10;
-        tmpL /= 10;
+        numL[lenL++] = tmpL % 81;
+        tmpL /= 81;
     }
 
     while(tmpR > 0){
-        numR[lenR++] = tmpR % 10;
-        tmpR /= 10;
+        numR[lenR++] = tmpR % 81;
+        tmpR /= 81;
     }
 
     int len = max(lenL, lenR);
