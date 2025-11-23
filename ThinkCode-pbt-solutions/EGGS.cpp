@@ -390,39 +390,42 @@ namespace BIGINT_v2{
 using namespace BIGINT_v2;
 using namespace BIGINT_v2::Utils;
 
-#define int long long
+//#define int long long
 
 const int MOD = 1e9 + 7;
-const int OFFSET = 4240;
-int dp[53][2][2][2][2][2][8485];
-int numL[53], numR[53];
-int Time = 0;
-int Try(int idx, int smaller1, int larger1, int smaller2, int larger2, int less, int diff){
+int pow3[4] = {1, 3, 9, 27};
+
+unordered_map<int, int> dp[212][2][2][2][2][2];
+int numL[212], numR[212];
+int len;
+int Try(int idx, bool smaller1, bool larger1, bool smaller2, bool larger2, bool less, int diff){
     if(idx < 0){
-        return less && diff > OFFSET;
+        return less && diff > 0;
     }
 
-    int& memo = dp[idx][smaller1][larger1][smaller2][larger2][less][diff];
-    if(memo != -1) return memo;
+    auto& umap = dp[idx][smaller1][larger1][smaller2][larger2][less];
+    if(umap.count(diff)) return umap[diff];
+    int& memo = umap[diff];
 
     int bot1 = (larger1 ? 0 : numL[idx]);
     int bot2 = larger2 ? 0 : numL[idx];
 
-    int lim1 = (smaller1 ? 80 : numR[idx]);
-    int lim2 = smaller2 ? 80 : numR[idx];
+    int lim1 = (smaller1 ? 2 : numR[idx]);
+    int lim2 = smaller2 ? 2 : numR[idx];
+
+    int dcnt = len - idx - 1;
 
 //    cerr << "\t- " << A << ' ' << B << ": " << idx << ' ' << numL[idx] << ' ' << numR[idx] << " | " << bot1 << ' ' << lim1 << ' ' << bot2 << ' ' << lim2 << " | " << smaller1 << ' ' << smaller2 << " | " << larger1 << ' ' << larger2 << " | " << less << '\n';
 
-    memo = 0;
+//    memo = 0;
     for(int digit1 = bot1; digit1 <= lim1; ++digit1){
         int base = less ? bot2 : max(bot2, digit1);
         for(int digit2 = base; digit2 <= lim2; ++digit2){
-            memo += Try(idx - 1,
+            memo = (1LL * memo + Try(idx - 1,
                     (smaller1 || (digit1 < lim1)), (larger1 || (digit1 > bot1)),
                     (smaller2 || (digit2 < lim2)), (larger2 || (digit2 > bot2)),
                     (less || digit1 < digit2),
-                    diff + (digit1 - digit2));
-            memo %= MOD;
+                    diff + (digit1 * pow3[3 - dcnt % 4] - digit2 * pow3[3 - dcnt % 4]))) % MOD;
         }
     }
 
@@ -437,19 +440,20 @@ void solve(){
 
     bigint tmpL = L, tmpR = R;
     while(tmpL > 0){
-        numL[lenL++] = tmpL % 81;
-        tmpL /= 81;
+        numL[lenL++] = tmpL % 3;
+        tmpL /= 3;
     }
 
     while(tmpR > 0){
-        numR[lenR++] = tmpR % 81;
-        tmpR /= 81;
+        numR[lenR++] = tmpR % 3;
+        tmpR /= 3;
     }
 
-    int len = max(lenL, lenR);
+    len = max(lenL, lenR);
+    len = (len + 4 - 1) / 4 * 4;
 
-    memset(dp, -1, sizeof dp);
-    int ans = Try(len - 1, 0, 0, 0, 0, 0, OFFSET);
+//    memset(dp, -1, sizeof dp);
+    int ans = Try(len - 1, 0, 0, 0, 0, 0, 0);
     cout << ans << '\n';
 }
 
