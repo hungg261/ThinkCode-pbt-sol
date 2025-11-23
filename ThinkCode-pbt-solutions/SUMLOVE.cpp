@@ -11,7 +11,6 @@ const int SQRTN = 633, MAXK = 1e5;
 const int MOD = 1e9 + 7;
 int n, Q;
 
-int dp[SQRTN + 5][MAXK + 5];
 void solve(){
     cin >> n >> Q;
 
@@ -22,8 +21,10 @@ void solve(){
         maxval = max(maxval, qr[i]);
     }
 
+    int lim = 2 * (int)sqrt(maxval) + 1;
+    vector<vector<int>> dp(lim + 1, vector<int>(maxval + 1, 0));
     dp[0][0] = 1;
-    int lim = 2 * (int)sqrt(n) + 1;
+
     for (int i = 1; i <= lim; ++i){
         for (int j = i; j <= maxval; ++j){
             dp[i][j] = (1LL * dp[i][j] + dp[i][j - i]) % MOD;
@@ -39,7 +40,7 @@ void solve(){
         const int& k = qr[i];
 
         int ans = 0;
-        for (int i = 0; i <= SQRTN; ++i){
+        for (int i = 0; i <= lim; ++i){
             ans = (1LL * ans + dp[i][k]) % MOD;
         }
         cout << (ans % MOD + MOD) % MOD << '\n';

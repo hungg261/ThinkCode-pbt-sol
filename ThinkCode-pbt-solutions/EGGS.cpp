@@ -4,6 +4,9 @@ Code: EGGS
 Time (YYYY-MM-DD-hh.mm.ss): 2025-11-22-22.29.32
 *******************************************************************************/
 #include<bits/stdc++.h>
+#pragma GCC optimize("Ofast,unroll-loops,O3,inline")
+#pragma GCC target("avx,avx2,fma,sse4.2,bmi,bmi2")
+#pragma GCC optimize("fast-math")
 using namespace std;
 
 /*
