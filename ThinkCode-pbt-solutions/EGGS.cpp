@@ -398,17 +398,17 @@ using namespace BIGINT_v2::Utils;
 const int MOD = 1e9 + 7;
 int pow3[4] = {1, 3, 9, 27};
 
-unordered_map<int, int> dp[212][2][2][2][2][2];
+const int OFFSET = 4191;
+int dp[212][2][2][2][2][2][8385];
 int numL[212], numR[212];
 int len;
 int Try(int idx, bool smaller1, bool larger1, bool smaller2, bool larger2, bool less, int diff){
     if(idx < 0){
-        return less && diff > 0;
+        return less && diff > OFFSET;
     }
 
-    auto& umap = dp[idx][smaller1][larger1][smaller2][larger2][less];
-    if(umap.count(diff)) return umap[diff];
-    int& memo = umap[diff];
+    int& memo = dp[idx][smaller1][larger1][smaller2][larger2][less][diff];
+    if(memo != -1) return memo;
 
     int bot1 = (larger1 ? 0 : numL[idx]);
     int bot2 = larger2 ? 0 : numL[idx];
@@ -418,9 +418,7 @@ int Try(int idx, bool smaller1, bool larger1, bool smaller2, bool larger2, bool 
 
     int dcnt = len - idx - 1;
 
-//    cerr << "\t- " << A << ' ' << B << ": " << idx << ' ' << numL[idx] << ' ' << numR[idx] << " | " << bot1 << ' ' << lim1 << ' ' << bot2 << ' ' << lim2 << " | " << smaller1 << ' ' << smaller2 << " | " << larger1 << ' ' << larger2 << " | " << less << '\n';
-
-//    memo = 0;
+    memo = 0;
     for(int digit1 = bot1; digit1 <= lim1; ++digit1){
         int base = less ? bot2 : max(bot2, digit1);
         for(int digit2 = base; digit2 <= lim2; ++digit2){
@@ -455,8 +453,8 @@ void solve(){
     len = max(lenL, lenR);
     len = (len + 4 - 1) / 4 * 4;
 
-//    memset(dp, -1, sizeof dp);
-    int ans = Try(len - 1, 0, 0, 0, 0, 0, 0);
+    memset(dp, -1, sizeof dp);
+    int ans = Try(len - 1, 0, 0, 0, 0, 0, OFFSET);
     cout << ans << '\n';
 }
 
