@@ -7,56 +7,52 @@ Time (YYYY-MM-DD-hh.mm.ss): 2025-11-15-23.17.47
 using namespace std;
 
 struct AhoCorasick{
+    static const int CHARCNT = 2;
+    static const char ORIGIN = '0';
     struct Node{
-        int nxt[2];
+        int nxt[CHARCNT];
+        int cnt;
         int link;
-        int occurrences;
-        vector<int> ends;
 
         Node(){
             memset(nxt, -1, sizeof nxt);
-            occurrences = 0;
+            cnt = 0;
             link = -1;
         }
     };
 
     vector<Node> T;
-    vector<vector<int>> adj;
-    int root;
 
     AhoCorasick(){
         T.emplace_back();
-        root = 0;
     }
 
-    void add(int idx, const string& s){
-        int p = root;
+    void add(const string& s){
+        int p = 0;
         for(int c: s){
-            c -= '0';
+            c -= ORIGIN;
 
             if(T[p].nxt[c] == -1){
                 T[p].nxt[c] = T.size();
-
                 T.emplace_back();
             }
             p = T[p].nxt[c];
         }
 
-        T[p].ends.push_back(idx);
+        ++T[p].cnt;
     }
 
-    void construct(){
-        T[root].link = root;
+    void build(){
         queue<int> que;
 
-        for(int c = 0; c < 2; ++c){
-            int v = T[root].nxt[c];
-            if(v != -1){
-                T[v].link = root;
-                que.push(v);
+        T[0].link = 0;
+        for(int c = 0; c < CHARCNT; ++c){
+            if(T[0].nxt[c] != -1){
+                T[T[0].nxt[c]].link = 0;
+                que.push(T[0].nxt[c]);
             }
             else{
-                T[root].nxt[c] = root;
+                T[0].nxt[c] = 0;
             }
         }
 
@@ -64,10 +60,11 @@ struct AhoCorasick{
             int u = que.front();
             que.pop();
 
-            for(int c = 0; c < 2; ++c){
+            for(int c = 0; c < CHARCNT; ++c){
                 int v = T[u].nxt[c];
                 if(v != -1){
                     T[v].link = T[T[u].link].nxt[c];
+                    T[v].cnt += T[T[v].link].cnt;
                     que.push(v);
                 }
                 else{
@@ -75,52 +72,19 @@ struct AhoCorasick{
                 }
             }
         }
-
-        adj.resize(T.size());
-        for(int i = 1; i < T.size(); ++i){
-            adj[T[i].link].push_back(i);
-        }
     }
 
-    int dfs(int u, long long& res){
-        int occ = T[u].occurrences;
-        for(int v: adj[u]){
-            occ += dfs(v, res);
-        }
-
-        for(int id: T[u].ends){
-            res += occ;
-        }
-
-        return occ;
-    }
-
-    void AddSearchText(const string& Text){
-        int p = root;
+    long long Analyze(const string& Text){
+        int p = 0;
+        long long ans = 0;
         for(int c: Text){
-            c -= '0';
+            c -= ORIGIN;
 
             p = T[p].nxt[c];
-            if(p != -1){
-                T[p].occurrences++;
-            }
+            ans += T[p].cnt;
         }
-    }
 
-    void RemoveSearchText(const string& Text){
-        int p = root;
-        for(int c: Text){
-            c -= '0';
-
-            p = T[p].nxt[c];
-            if(p != -1){
-                T[p].occurrences--;
-            }
-        }
-    }
-
-    void Search(long long& res){
-        dfs(root, res);
+        return ans;
     }
 };
 
@@ -173,26 +137,20 @@ void subtask0(){
 
 void subtask1(){
     AhoCorasick aho;
-    int i = 1, cnt = 0;
+    int i = 1;
     for(; i <= n; ++i){
-        if(Data[i].first == 0) aho.add(cnt++, Data[i].second);
+        if(Data[i].first == 0) aho.add(Data[i].second);
         else{
             break;
         }
     }
 
-    aho.construct();
+    aho.build();
 
     for(int j = i; j <= n; ++j){
         if(Data[j].first != 1) break;
 
-        aho.AddSearchText(Data[j].second);
-
-        long long res = 0;
-        aho.Search(res);
-        cout << res << '\n';
-
-        aho.RemoveSearchText(Data[j].second);
+        cout << aho.Analyze(Data[j].second) << '\n';
     }
 }
 
