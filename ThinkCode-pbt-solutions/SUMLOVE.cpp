@@ -4,7 +4,6 @@ Code: SUMLOVE
 Time (YYYY-MM-DD-hh.mm.ss): 2025-11-22-18.15.01
 *******************************************************************************/
 #include<bits/stdc++.h>
-//#define int long long
 using namespace std;
 
 const int SQRTN = 633, MAXK = 1e5;
@@ -53,12 +52,3 @@ signed main(){
 
     return 0;
 }
-
-/*
-5 5
-1
-2
-3
-4
-5
-*/
