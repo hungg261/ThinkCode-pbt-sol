@@ -6,6 +6,8 @@ Time (YYYY-MM-DD-hh.mm.ss): 2025-11-15-23.17.47
 #include<bits/stdc++.h>
 using namespace std;
 
+const int MAXN = 1e6, MAXLEN = 2e6, MAXLG = __lg(MAXN) + 1;
+
 struct AhoCorasick{
     static const int CHARCNT = 2;
     static const char ORIGIN = '0';
@@ -24,6 +26,11 @@ struct AhoCorasick{
     vector<Node> T;
 
     AhoCorasick(){
+        T.emplace_back();
+    }
+
+    void clear(){
+        T.clear();
         T.emplace_back();
     }
 
@@ -88,86 +95,48 @@ struct AhoCorasick{
     }
 };
 
-int cnt_occurrence(const string& s, const string& t){
-    string X = t + '#' + s;
-    int sz = X.size();
-
-    vector<int> pi(sz);
-    pi[0] = 0;
-
-    int res = 0;
-    for(int i = 1; i < sz; ++i){
-        int j = pi[i - 1];
-        while(j > 0 && X[i] != X[j]){
-            j = pi[j - 1];
-        }
-
-        if(X[i] == X[j]){
-            ++j;
-        }
-
-        pi[i] = j;
-        if(j == t.size()){
-            ++res;
-        }
-    }
-
-    return res;
-}
-
-const int MAXN = 1e6, MAXLEN = 2e6;
 int n;
 pair<int, string> Data[MAXN + 5];
+struct Groups{
+    vector<int> groups[MAXLG + 1];
+    AhoCorasick forest[MAXLG + 1];
 
-void subtask0(){
-    vector<string> S;
-    for(int i = 1; i <= n; ++i){
-        if(Data[i].first == 0) S.push_back(Data[i].second);
-        else{
-            int ans = 0;
-            for(const string& sample: S){
-                ans += cnt_occurrence(Data[i].second, sample);
+    void Insert(int idx){
+        vector<int> U = {idx};
+        for(int bit = 0; bit <= MAXLG; ++bit){
+            if(groups[bit].size() == U.size()){
+                U.insert(U.end(), groups[bit].begin(), groups[bit].end());
+                groups[bit].clear();
             }
+            else{
+                groups[bit] = U;
+                forest[bit].clear();
+                for(int id: groups[bit]){
+                    forest[bit].add(Data[id].second);
+                }
+                forest[bit].build();
 
-            cout << ans << '\n';
+                break;
+            }
         }
     }
 
-}
-
-void subtask1(){
-    AhoCorasick aho;
-    int i = 1;
-    for(; i <= n; ++i){
-        if(Data[i].first == 0) aho.add(Data[i].second);
-        else{
-            break;
+    long long query(int idx){
+        long long ans = 0;
+        for(int bit = 0; bit <= MAXLG; ++bit){
+            if(groups[bit].empty()) continue;
+            ans += forest[bit].Analyze(Data[idx].second);
         }
+
+        return ans;
     }
+};
 
-    aho.build();
-
-    for(int j = i; j <= n; ++j){
-        if(Data[j].first != 1) break;
-
-        cout << aho.Analyze(Data[j].second) << '\n';
-    }
-}
-
-void input(){
-    cin >> n;
-
-    int maxLen = 0;
+void solve(){
+    Groups group;
     for(int i = 1; i <= n; ++i){
-        cin >> Data[i].first >> Data[i].second;
-        if(Data[i].first == 0) maxLen = max(maxLen, (int) Data[i].second.size());
-    }
-
-    if(maxLen <= 10){
-        subtask0();
-    }
-    else{
-        subtask1();
+        if(Data[i].first == 0) group.Insert(i);
+        else cout << group.query(i) << '\n';
     }
 }
 
@@ -175,7 +144,12 @@ signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
     //freopen("VIRUS.INP","r",stdin);
     //freopen("VIRUS.OUT","w",stdout);
-    input();
+    cin >> n;
+    for(int i = 1; i <= n; ++i){
+        cin >> Data[i].first >> Data[i].second;
+    }
+
+    solve();
 
     return 0;
 }
