@@ -1,0 +1,1 @@
+print((lambda n, m, f: sum([(lambda _n, _m, one_n, one_m, bit: (one_n * (m - one_m) + (n - one_n) * one_m) << bit)(n, m, f(n - 1, i), f(m - 1, i), i) for i in range(3322)]) % (10 ** 9 + 7))(int(input()), int(input()), lambda n, bit: (n >> bit + 1 << bit) + max(0, n % (1 << bit + 1) - (1 << bit) + 1)))
