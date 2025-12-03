@@ -1,0 +1,22 @@
+A: Tính f(i) là số dãy tăng kết thúc tại i, g(i) là số dãy giảm bắt đầu tại i
+B: Áp dụng lcm*gcd=tích, đưa về đếm f(d) là số cặp có gcd=d. Đếm bằng QHĐ bù trừ
+C: Tham lam: Gọi next(i) là đoạn tiếp theo sẽ chọn nếu đoạn i được chọn. Xét từng vị trí bắt đầu, chặt nhị phân số đoạn cần chọn thêm, dùng bảng thưa để nhảy nhanh trên mảng next
+D: dp + IT, sweep line (sweep line kiểm soát một vùng, IT kiểm soát vùng còn lại của ràng buộc phạm vi).
+E: Gọi f[L][H] là số cách khôi phục đoạn s[L..H] trở thành dãy đúng. For i là ngoặc khớp với L để tính.
+F: Vị trí i còn lại sau cùng sẽ có mã nhị phân là ....10101010(10)110. Cần tìm i lớn nhất có dạng này mà không vượt quá độ dài xâu S. Sau đó chặt nhị phân m là số chứa i.
+G: Gọi f(n) là chi phí nhỏ nhất để đoán ra số trong phạm vi [1,n]. Tính bằng cách for k là số sẽ hỏi. Tối ưu bằng chặt nhị phân k, hoặc two-pointer k và n.
+H: Đưa về query trên cây, dùng BIT để xử lý.
+I: Chia để trị: Dùng sx trộn hoặc sx nhanh. Thiết kế phép trộn bằng cách dùng 1 hàng đợi rỗng, kết quả trộn sẽ chèn vào cuối hàng đợi.
+Gợi ý 3 bài khó vừa thêm:
+J: Tập độc lập cực đại trên đồ thị mặt trời
+K: Số màu cần dùng chính là số path giao nhau nhiều nhất => Cần tìm 1 điểm mà nằm trên nhiều path nhất => HLD để thực hiện tăng/giảm 1 path và query max
+L: Ahocorasick + dynamic structure
+M: Hàm Z
+N: Đường đi dài nhất kết thúc tại x + đường đi dài nhất bắt đầu tại x
+O: Kẻ một đường thẳng đứng, đường này sẽ cắt không quá log hình tròn
+P: dp căn
+WKMAX: dsu
+CPMT: cố định 2 dòng, for tính tiến 2 cột
+XSUM: a[i][j] = (i-1) xor (j-1)
+LISX: dp digit, xây dựng cả số và số con
+CONECT: cặp ghép cực đại
