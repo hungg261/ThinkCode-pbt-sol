@@ -76,6 +76,7 @@ void solve(){
                 dag[i].emplace_back(temp_dag[i][j - 1].first, weights);
                 weights = temp_dag[i][j].second;
             }
+            else weights += temp_dag[i][j].second;
         }
         dag[i].emplace_back(temp_dag[i].back().first, weights);
     }
@@ -85,9 +86,13 @@ void solve(){
         if(!vis[i]) toposort(i);
     }
 
+    reverse(begin(topo), end(topo));
     for(int u: topo){
+//        cerr << "t: " << u << '\n';
+
         dp[u] = max(dp[u], sccW[u]);
         for(const pair<int, int>& e: dag[u]){
+//            cerr << u << " -> " << e.first << ": " << e.second << '\n';
             dp[e.first] = max(dp[e.first], dp[u] + e.second + sccW[e.first]);
         }
     }
@@ -126,6 +131,7 @@ signed main(){
 
 //    for(int i = 1; i <= n; ++i){
 //        cerr << sccW[sccID[i]] << '\n';
+//        cerr << sccID[i] << '\n';
 //    }
 
     return 0;
